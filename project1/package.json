@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "build": "tsc",
+    "watch-ts": "tsc -w",
+    "serve-debug": "nodemon --inspect dist/server.js",
+    "watch-debug": "concurrently -k -p \"[{name}]\" \"npm run watch-ts\" \"npm run serve-debug\""
+  },
+  "dependencies": {
+    "bitcoinjs-lib": "^4.0.3",
+    "bitcoinjs-message": "^2.0.0",
+    "body-parser": "^1.18.3",
+    "concurrently": "^5.0.0",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.4",
+    "hex2ascii": "0.0.3",
+    "morgan": "^1.9.1",
+    "nodemon": "^2.0.1",
+    "typescript": "^3.7.3"
+  }
+}
