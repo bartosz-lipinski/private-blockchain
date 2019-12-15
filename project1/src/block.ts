@@ -16,8 +16,8 @@ export class Block {
   height: number;
   body: string;
   time: number;
-  hash: any;
-  previousBlockHash: any;
+  hash: string;
+  previousBlockHash: string;
 
   // Constructor - argument data will be the object containing the transaction data
   constructor(data: any) {
@@ -40,18 +40,11 @@ export class Block {
    *  5. Resolve true or false depending if it is valid or not.
    *  Note: to access the class values inside a Promise code you need to create an auxiliary value `let self = this;`
    */
-  validate() {
+  public validate = async () => {
     let self = this;
-    return new Promise((resolve, reject) => {
-      // Save in auxiliary variable the current block hash
-
-      // Recalculate the hash of the Block
-      // Comparing if the hashes changed
-      // Returning the Block is not valid
-
-      // Returning the Block is valid
-
-    });
+    const previousHash = self.hash;
+    const hash = SHA256(JSON.stringify(this.getBData())).toString();
+    return previousHash === hash;
   }
 
   /**
@@ -63,12 +56,15 @@ export class Block {
    *  3. Resolve with the data and make sure that you don't need to return the data for the `genesis block` 
    *     or Reject with an error.
    */
-  getBData() {
+  private getBData = () => {
     // Getting the encoded data saved in the Block
     // Decoding the data to retrieve the JSON representation of the object
     // Parse the data to an object to be retrieve.
 
     // Resolve with the data if the object isn't the Genesis block
+    let self = this;
+    const text = hex2ascii(self.body);
+    return JSON.parse(text);
 
   }
 

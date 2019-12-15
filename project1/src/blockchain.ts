@@ -14,7 +14,7 @@ import bitcoinMessage from 'bitcoinjs-message';
 
 export class Blockchain {
   private height: number = -1;
-  private chain: any[] = [];
+  private chain: Block[] = [];
 
   /**
    * Constructor of the class, you will need to setup your chain array and the height
@@ -49,6 +49,10 @@ export class Blockchain {
     });
   }
 
+  private getLatestBlock(): Block {
+    return this.chain[this.chain.length -1];
+  }
+
   /**
    * _addBlock(block) will store a block in the chain
    * @param {*} block 
@@ -61,10 +65,17 @@ export class Blockchain {
    * Note: the symbol `_` in the method name indicates in the javascript convention 
    * that this method is a private method. 
    */
-  _addBlock(block: any) {
+  _addBlock(block: Block) {
     let self = this;
     return new Promise(async (resolve, reject) => {
-
+      block.height = self.chain.length;
+      block.time = Number.parseInt(new Date().getTime().toString().slice(0,-3));
+      if (this.chain.length>0) {
+        block.previousBlockHash = self.getLatestBlock().hash;
+      }
+      // SHA256 requires a string of data
+      block.hash = SHA256(JSON.stringify(block)).toString();
+      self.chain.push(block);
     });
   }
 
@@ -76,7 +87,7 @@ export class Blockchain {
    * The method return a Promise that will resolve with the message to be signed
    * @param {*} address 
    */
-  requestMessageOwnershipVerification(address: any) {
+  requestMessageOwnershipVerification(address: string) {
     return new Promise((resolve) => {
 
     });
@@ -99,7 +110,7 @@ export class Blockchain {
    * @param {*} signature 
    * @param {*} star 
    */
-  submitStar(address: any, message: any, signature: any, star: any) {
+  submitStar(address: string, message: any, signature: any, star: any) {
     let self = this;
     return new Promise(async (resolve, reject) => {
 
@@ -115,7 +126,12 @@ export class Blockchain {
   getBlockByHash(hash: any) {
     let self = this;
     return new Promise((resolve, reject) => {
-
+      let block = self.chain.filter(p => p.hash === hash)[0];
+      if (block) {
+        resolve(block);
+      } else {
+        resolve(null);
+      }
     });
   }
 
@@ -160,7 +176,7 @@ export class Blockchain {
     let self = this;
     let errorLog = [];
     return new Promise(async (resolve, reject) => {
-
+      resolve(self.chain.every(block => block.validate()));
     });
   }
 

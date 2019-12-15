@@ -10,7 +10,7 @@ import { Blockchain } from './blockchain';
  */
 export class BlockchainController {
   app: Express;
-  blockchain: any;
+  blockchain: Blockchain;
 
   //The constructor receive the instance of the express.js app and the Blockchain class
   constructor(app: Express, blockchainObj: Blockchain) {
