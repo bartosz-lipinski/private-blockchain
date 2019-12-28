@@ -12,7 +12,7 @@ import bodyParser from "body-parser";
 /**
  * Require the Blockchain class. This allow us to have only one instance of the class.
  */
-import { Blockchain } from './blockchain.js';
+import { Blockchain } from './blockchain';
 import { BlockchainController } from './blockchainController';
 
 class ApplicationServer {
@@ -57,4 +57,7 @@ class ApplicationServer {
 
 }
 
-new ApplicationServer();
+const server = new ApplicationServer();
+const app = server.app;
+
+export default app;

@@ -8,8 +8,8 @@
  *  
  */
 
-import SHA256 from 'crypto-js/sha256';
-import { Block } from './block.js';
+import { Block } from './block';
+import { getCurrentTime } from './utils';
 import bitcoinMessage from 'bitcoinjs-message';
 
 export class Blockchain {
@@ -65,18 +65,16 @@ export class Blockchain {
    * Note: the symbol `_` in the method name indicates in the javascript convention 
    * that this method is a private method. 
    */
-  _addBlock(block: Block) {
+  private _addBlock = async (block: Block) => {
     let self = this;
-    return new Promise(async (resolve, reject) => {
-      block.height = self.chain.length;
-      block.time = Number.parseInt(new Date().getTime().toString().slice(0,-3));
-      if (this.chain.length>0) {
-        block.previousBlockHash = self.getLatestBlock().hash;
-      }
-      // SHA256 requires a string of data
-      block.hash = SHA256(JSON.stringify(block)).toString();
-      self.chain.push(block);
-    });
+    block.height = self.chain.length;
+    block.time = getCurrentTime();
+    if (this.chain.length > 0) {
+      block.previousBlockHash = self.getLatestBlock().hash;
+    }
+
+    block.initHash();
+    self.chain.push(block);
   }
 
   /**
@@ -87,10 +85,9 @@ export class Blockchain {
    * The method return a Promise that will resolve with the message to be signed
    * @param {*} address 
    */
-  requestMessageOwnershipVerification(address: string) {
-    return new Promise((resolve) => {
-
-    });
+  requestMessageOwnershipVerification = async (address: string) => {
+    const message = `${address}:${getCurrentTime()}:starRegistry`;
+    return message;
   }
 
   /**
@@ -110,11 +107,22 @@ export class Blockchain {
    * @param {*} signature 
    * @param {*} star 
    */
-  submitStar(address: string, message: any, signature: any, star: any) {
+  submitStar = async (address: string, message: any, signature: any, star: any) => {
     let self = this;
-    return new Promise(async (resolve, reject) => {
 
-    });
+    const time = parseInt(message.split(':')[1]);
+    let currentTime = getCurrentTime();
+
+    if(time > currentTime) {
+      throw new Error('Rejecting old request');
+    }
+
+    bitcoinMessage.verify(message, address, signature);
+
+    const block = new Block(star);
+    await this._addBlock(block);
+    
+    return block;
   }
 
   /**
@@ -123,16 +131,8 @@ export class Blockchain {
    * Search on the chain array for the block that has the hash.
    * @param {*} hash 
    */
-  getBlockByHash(hash: any) {
-    let self = this;
-    return new Promise((resolve, reject) => {
-      let block = self.chain.filter(p => p.hash === hash)[0];
-      if (block) {
-        resolve(block);
-      } else {
-        resolve(null);
-      }
-    });
+  getBlockByHash = async (hash: string) => {
+    return this.chain.filter(p => p.hash === hash)[0];  
   }
 
   /**
@@ -140,16 +140,8 @@ export class Blockchain {
    * with the height equal to the parameter `height`
    * @param {*} height 
    */
-  getBlockByHeight(height: number) {
-    let self = this;
-    return new Promise((resolve, reject) => {
-      let block = self.chain.filter(p => p.height === height)[0];
-      if (block) {
-        resolve(block);
-      } else {
-        resolve(null);
-      }
-    });
+  getBlockByHeight = async (height: number) => {
+    return this.chain.filter(p => p.height === height)[0];
   }
 
   /**
@@ -158,7 +150,7 @@ export class Blockchain {
    * Remember the star should be returned decoded.
    * @param {*} address 
    */
-  getStarsByWalletAddress(address: any) {
+  getStarsByWalletAddress(address: string) {
     let self = this;
     let stars = [];
     return new Promise((resolve, reject) => {
