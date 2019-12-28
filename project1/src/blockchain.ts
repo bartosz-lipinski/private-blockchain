@@ -110,7 +110,7 @@ export class Blockchain {
     const time = parseInt(message.split(':')[1]);
     let currentTime = getCurrentTime();
 
-    if((time + (5 * MINUTE)) > currentTime) {
+    if((time + (5 * MINUTE)) <= currentTime) {
       throw new Error('Rejecting old request');
     }
 

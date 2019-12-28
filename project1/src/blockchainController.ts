@@ -38,7 +38,6 @@ export class BlockchainController {
       } else {
         return res.status(404).send("Block Not Found! Review the Parameters!");
       }
-
     });
   }
 

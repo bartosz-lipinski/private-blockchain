@@ -5,8 +5,8 @@ GET http://localhost:8000/block/0
 POST http://localhost:8000/requestValidation
 content-type: application/json
 
-{a
-    "address": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm"
+{
+    "address": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF"
 }
 
 ###
@@ -14,12 +14,24 @@ POST http://localhost:8000/submitStar
 content-type: application/json
 
 {
-    "address": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm",
-    "signature": "bc1q8snqeecr3nrjehddd0062jv79lf3ln520d60x9zmm",
-    "message": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm",
+    "address": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF",
+    "signature": "IPXE8mS2Xx53NYgHRVTSgEJw//6cmNHUR6FfACJ/OvziLvCtBjx3/CxwJSSLp9chfJ3HtuXqmxGnm2NYkmiMN34=",
+    "message": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF:1577558339:starRegistry",
     "star": {
         "dec": "",
         "ra": "",
         "story": ""
     }
 }
+
+###
+GET http://localhost:8000/blocks/myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF
+content-type: application/json
+
+###
+GET http://localhost:8000/block/30fc39aa18f85d5619b9fdd9837da61590b6386963ebaf3fd18ab7c9975a0b66
+content-type: application/json
+
+###
+GET http://localhost:8000/block/2
+content-type: application/json
