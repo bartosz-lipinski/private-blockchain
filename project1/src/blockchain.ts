@@ -65,14 +65,16 @@ export class Blockchain {
    */
   private _addBlock = async (block: Block) => {
     let self = this;
-    block.height = self.chain.length;
+    const NEW_HEIGHT = (await this.getChainHeight()) + 1;
+    block.height = NEW_HEIGHT;
     block.time = getCurrentTime();
-    if (this.chain.length > 0) {
+    if (NEW_HEIGHT > 0) {
       block.previousBlockHash = self.getLatestBlock().hash;
     }
 
     block.initHash();
     self.chain.push(block);
+    this.height = NEW_HEIGHT;
   }
 
   /**
@@ -84,8 +86,7 @@ export class Blockchain {
    * @param {*} address 
    */
   public requestMessageOwnershipVerification = async (address: string) => {
-    const message = `${address}:${getCurrentTime()}:starRegistry`;
-    return message;
+    return `${address}:${getCurrentTime()}:starRegistry`;
   }
 
   /**
