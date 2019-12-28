@@ -5,6 +5,21 @@ GET http://localhost:8000/block/0
 POST http://localhost:8000/requestValidation
 content-type: application/json
 
+{a
+    "address": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm"
+}
+
+###
+POST http://localhost:8000/submitStar
+content-type: application/json
+
 {
-    "address": "abx"
+    "address": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm",
+    "signature": "bc1q8snqeecr3nrjehddd0062jv79lf3ln520d60x9zmm",
+    "message": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm",
+    "star": {
+        "dec": "",
+        "ra": "",
+        "story": ""
+    }
 }

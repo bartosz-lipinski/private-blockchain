@@ -151,7 +151,7 @@ export class Blockchain {
   getStarsByWalletAddress = async (address: string) => {
     return this.chain
       .map(block => block.getBData())
-      .filter(data => data.owner === address);
+      .filter(data => data && data.owner === address);
   }
 
   /**
@@ -161,12 +161,30 @@ export class Blockchain {
    * 2. Each Block should check the with the previousBlockHash
    */
   validateChain = async () => {
-    const errorLog = [];
+    const errorLog: string[] = [];
+    const promises: Promise<boolean>[] = [];
+    for (let i = 0; i < this.chain.length; i++) {
+      const block = this.chain[i];
+      if(block.height > 0) {
+        const prevBlock = this.chain[i-1];
+        if(prevBlock.hash !== block.previousBlockHash) {
+          errorLog.push(`Error hash mismatch for block at height: ${this.chain[i].height}.`);
+        }
+      }
 
-    // TODO: 
-    // 1. handle async
-    // 2. previous hash check
-    return this.chain.every(block => block.validate());
+      promises.push(block.validate());
+    }
+
+    const results = await Promise.all(promises);
+
+    for (let i = 0; i < results.length; i++) {
+      // invalid
+      if(!results[i]) {
+        errorLog.push(`Error invalid block at height: ${this.chain[i].height}`);
+      }
+    }
+
+    return errorLog;
   }
 
 }

@@ -78,8 +78,9 @@ export class Block {
     // Parse the data to an object to be retrieve.
 
     // Resolve with the data if the object isn't the Genesis block
-    let self = this;
-    const text = hex2ascii(self.body);
+    if(this.height <= 0) { return; }
+    
+    const text = hex2ascii(this.body);
     return JSON.parse(text) as BlockData;
   }
 }
