@@ -33,7 +33,7 @@ export class Blockchain {
    * You should use the `addBlock(block)` to create the Genesis Block
    * Passing as a data `{data: 'Genesis Block'}`
    */
-  async initializeChain() {
+  public async initializeChain() {
     if (this.height === -1) {
       let block = new Block({ data: 'Genesis Block' });
       await this._addBlock(block);
@@ -43,11 +43,11 @@ export class Blockchain {
   /**
    * Utility method that return a Promise that will resolve with the height of the chain
    */
-  getChainHeight =  async () => {
+  public getChainHeight =  async () => {
     return this.height;
   }
 
-  private getLatestBlock(): Block {
+  public getLatestBlock(): Block {
     return this.chain[this.chain.length -1];
   }
 
@@ -149,7 +149,7 @@ export class Blockchain {
    * Remember the star should be returned decoded.
    * @param {*} address 
    */
-  getStarsByWalletAddress = async (address: string) => {
+  public getStarsByWalletAddress = async (address: string) => {
     return this.chain
       .map(block => block.getBData())
       .filter(data => data && data.owner === address);
@@ -161,31 +161,32 @@ export class Blockchain {
    * 1. You should validate each block using `validateBlock`
    * 2. Each Block should check the with the previousBlockHash
    */
-  validateChain = async () => {
+  public validateChain = async () => {
     const errorLog: string[] = [];
     const promises: Promise<boolean>[] = [];
     for (let i = 0; i < this.chain.length; i++) {
       const block = this.chain[i];
-      if(block.height > 0) {
-        const prevBlock = this.chain[i-1];
-        if(prevBlock.hash !== block.previousBlockHash) {
-          errorLog.push(`Error hash mismatch for block at height: ${this.chain[i].height}.`);
-        }
+      promises.push(block.validate());
+
+      if(block.height <= 0) {
+        continue;
       }
 
-      promises.push(block.validate());
+      const prevBlock = this.chain[i-1];
+      if(prevBlock.hash !== block.previousBlockHash) {
+        errorLog.push(`Error hash mismatch for block at height: ${this.chain[i].height}.`);
+      }
     }
 
     const results = await Promise.all(promises);
 
     for (let i = 0; i < results.length; i++) {
-      // invalid
-      if(!results[i]) {
+      const isValid = results[i];
+      if(!isValid) {
         errorLog.push(`Error invalid block at height: ${this.chain[i].height}`);
       }
     }
 
     return errorLog;
   }
-
 }
