@@ -72,7 +72,7 @@ export class Blockchain {
       block.previousBlockHash = self.getLatestBlock().hash;
     }
 
-    block.initHash();
+    block.hash = block.computeHash();
     self.chain.push(block);
     this.height = NEW_HEIGHT;
   }
@@ -110,7 +110,7 @@ export class Blockchain {
     const time = parseInt(message.split(':')[1]);
     let currentTime = getCurrentTime();
 
-    if((time + (5 * MINUTE)) <= currentTime) {
+    if((time + (5 * 60)) < currentTime) {
       throw new Error('Rejecting old request');
     }
 

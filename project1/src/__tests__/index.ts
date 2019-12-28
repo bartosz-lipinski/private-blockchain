@@ -26,7 +26,7 @@ describe("GET /block/:height - getting block by height", () => {
 describe("POST /requestValidation - ..", () => {
     it("Response to valid address should be json", async () => {
       const result = await request(app).post("/requestValidation"  )
-      .send({"address": "bc1q8snqeecr3nrjeh0062jv79lf3ln520d60x9zmm"})
+      .send({"address": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF"})
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200);

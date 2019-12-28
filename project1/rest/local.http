@@ -1,3 +1,5 @@
+
+# GET genesis block
 GET http://localhost:8000/block/0
 
 
@@ -15,8 +17,8 @@ content-type: application/json
 
 {
     "address": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF",
-    "signature": "IPXE8mS2Xx53NYgHRVTSgEJw//6cmNHUR6FfACJ/OvziLvCtBjx3/CxwJSSLp9chfJ3HtuXqmxGnm2NYkmiMN34=",
-    "message": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF:1577558339:starRegistry",
+    "signature": "H2SdOATW8DEGuP7TQhpPyt77+auD1qcHNQTDNK2OVm/HJ9wF+qJaqUnftQa/3ufjZM12X50F3dSTdl2aTgTb0nw=",
+    "message": "myoJTcHCub3aLJ4aGmRzMGxbTUYHRAJJcF:1577570780:starRegistry",
     "star": {
         "dec": "",
         "ra": "",
@@ -33,5 +35,5 @@ GET http://localhost:8000/block/30fc39aa18f85d5619b9fdd9837da61590b6386963ebaf3f
 content-type: application/json
 
 ###
-GET http://localhost:8000/block/2
+GET http://localhost:8000/block/30fc39aa18f85d5619b9fdd9837da61590b6386963ebaf3fd18ab7c9975a0b66
 content-type: application/json

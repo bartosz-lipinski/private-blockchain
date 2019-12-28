@@ -54,13 +54,12 @@ export class Block {
   public validate = async () => {
     let self = this;
     const previousHash = self.hash;
-    const hash = SHA256(JSON.stringify(this.getBData())).toString();
+    const hash = this.computeHash();
     return previousHash === hash;
   }
 
-  public initHash = () => {
-    let self = this;
-    self.hash = SHA256(JSON.stringify(self)).toString();
+  public computeHash = () => {
+    return SHA256(JSON.stringify(this)).toString();
   }
 
   /**
