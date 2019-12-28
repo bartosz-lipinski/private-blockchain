@@ -9,7 +9,7 @@
  */
 
 import { Block } from './block';
-import { getCurrentTime } from './utils';
+import { getCurrentTime, MINUTE } from './utils';
 import bitcoinMessage from 'bitcoinjs-message';
 
 export class Blockchain {
@@ -43,10 +43,8 @@ export class Blockchain {
   /**
    * Utility method that return a Promise that will resolve with the height of the chain
    */
-  getChainHeight() {
-    return new Promise((resolve, reject) => {
-      resolve(this.height);
-    });
+  getChainHeight =  async () => {
+    return this.height;
   }
 
   private getLatestBlock(): Block {
@@ -85,7 +83,7 @@ export class Blockchain {
    * The method return a Promise that will resolve with the message to be signed
    * @param {*} address 
    */
-  requestMessageOwnershipVerification = async (address: string) => {
+  public requestMessageOwnershipVerification = async (address: string) => {
     const message = `${address}:${getCurrentTime()}:starRegistry`;
     return message;
   }
@@ -107,19 +105,19 @@ export class Blockchain {
    * @param {*} signature 
    * @param {*} star 
    */
-  submitStar = async (address: string, message: any, signature: any, star: any) => {
-    let self = this;
-
+  public submitStar = async (address: string, message: any, signature: any, star: any) => {
     const time = parseInt(message.split(':')[1]);
     let currentTime = getCurrentTime();
 
-    if(time > currentTime) {
+    if((time + (5 * MINUTE)) > currentTime) {
       throw new Error('Rejecting old request');
     }
 
-    bitcoinMessage.verify(message, address, signature);
+    if (!bitcoinMessage.verify(message, address, signature)) {
+      throw new Error('Invalid sigunutre');
+    }
 
-    const block = new Block(star);
+    const block = new Block({ owner: address, star });
     await this._addBlock(block);
     
     return block;
@@ -131,7 +129,7 @@ export class Blockchain {
    * Search on the chain array for the block that has the hash.
    * @param {*} hash 
    */
-  getBlockByHash = async (hash: string) => {
+  public getBlockByHash = async (hash: string) => {
     return this.chain.filter(p => p.hash === hash)[0];  
   }
 
@@ -140,7 +138,7 @@ export class Blockchain {
    * with the height equal to the parameter `height`
    * @param {*} height 
    */
-  getBlockByHeight = async (height: number) => {
+  public getBlockByHeight = async (height: number) => {
     return this.chain.filter(p => p.height === height)[0];
   }
 
@@ -150,12 +148,10 @@ export class Blockchain {
    * Remember the star should be returned decoded.
    * @param {*} address 
    */
-  getStarsByWalletAddress(address: string) {
-    let self = this;
-    let stars = [];
-    return new Promise((resolve, reject) => {
-
-    });
+  getStarsByWalletAddress = async (address: string) => {
+    return this.chain
+      .map(block => block.getBData())
+      .filter(data => data.owner === address);
   }
 
   /**
@@ -164,12 +160,13 @@ export class Blockchain {
    * 1. You should validate each block using `validateBlock`
    * 2. Each Block should check the with the previousBlockHash
    */
-  validateChain() {
-    let self = this;
-    let errorLog = [];
-    return new Promise(async (resolve, reject) => {
-      resolve(self.chain.every(block => block.validate()));
-    });
+  validateChain = async () => {
+    const errorLog = [];
+
+    // TODO: 
+    // 1. handle async
+    // 2. previous hash check
+    return this.chain.every(block => block.validate());
   }
 
 }

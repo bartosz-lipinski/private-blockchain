@@ -9,4 +9,15 @@ describe("GET /block/:height - getting block by height", () => {
     expect(response.height).toEqual(0);
     expect(result.status).toEqual(200);
   });
+
+  it("Invalid Block", async () => {
+    const result = await request(app).get("/block/a");
+    expect(result.text).toEqual('Block Not Found!');
+    expect(result.status).toEqual(404);
+  });
+
+  it("Undefined Height", async () => {
+    const result = await request(app).get("/block");
+    expect(result.status).toEqual(404);
+  });
 });

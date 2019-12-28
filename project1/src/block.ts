@@ -12,6 +12,17 @@
 import SHA256 from 'crypto-js/sha256';
 import hex2ascii from 'hex2ascii';
 
+export interface Star {
+  dec: string;
+  ra: string;
+  story: string;
+}
+
+export interface BlockData {
+  owner: string;
+  star: Star;
+}
+
 export class Block {
   height: number;
   body: string;
@@ -61,7 +72,7 @@ export class Block {
    *  3. Resolve with the data and make sure that you don't need to return the data for the `genesis block` 
    *     or Reject with an error.
    */
-  private getBData = () => {
+  public getBData = () => {
     // Getting the encoded data saved in the Block
     // Decoding the data to retrieve the JSON representation of the object
     // Parse the data to an object to be retrieve.
@@ -69,8 +80,6 @@ export class Block {
     // Resolve with the data if the object isn't the Genesis block
     let self = this;
     const text = hex2ascii(self.body);
-    return JSON.parse(text);
-
+    return JSON.parse(text) as BlockData;
   }
-
 }
