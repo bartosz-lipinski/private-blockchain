@@ -9,7 +9,7 @@
  */
 
 import { Block } from './block';
-import { getCurrentTime, MINUTE } from './utils';
+import { getCurrentTime } from './utils';
 import bitcoinMessage from 'bitcoinjs-message';
 
 export class Blockchain {
