@@ -9,13 +9,13 @@ import { Blockchain } from './blockchain';
  * Blockchain dataset
  */
 export class BlockchainController {
-  app: Express;
-  blockchain: Blockchain;
+  private app: Express;
+  private blockchain: Blockchain;
 
   //The constructor receive the instance of the express.js app and the Blockchain class
-  constructor(app: Express, blockchainObj: Blockchain) {
+  constructor(app: Express, blockchain: Blockchain) {
     this.app = app;
-    this.blockchain = blockchainObj;
+    this.blockchain = blockchain;
     // All the endpoints methods needs to be called in the constructor to initialize the route.
     this.getBlockByHeight();
     this.requestOwnership();
@@ -25,7 +25,7 @@ export class BlockchainController {
   }
 
   // Enpoint to Get a Block by Height (GET Endpoint)
-  getBlockByHeight() {
+  public getBlockByHeight() {
     this.app.get("/block/:height", async (req, res) => {
       if (req.params.height) {
         const height = parseInt(req.params.height);
@@ -43,7 +43,7 @@ export class BlockchainController {
   }
 
   // Endpoint that allows user to request Ownership of a Wallet address (POST Endpoint)
-  requestOwnership() {
+  public requestOwnership() {
     this.app.post("/requestValidation", async (req, res) => {
       if (req.body.address) {
         const address = req.body.address;
@@ -60,7 +60,7 @@ export class BlockchainController {
   }
 
   // Endpoint that allow Submit a Star, yu need first to `requestOwnership` to have the message (POST endpoint)
-  submitStar() {
+  public submitStar() {
     this.app.post("/submitstar", async (req, res) => {
       if (req.body.address && req.body.message && req.body.signature && req.body.star) {
         const address = req.body.address;
@@ -84,7 +84,7 @@ export class BlockchainController {
   }
 
   // This endpoint allows you to retrieve the block by hash (GET endpoint)
-  getBlockByHash() {
+  public getBlockByHash() {
     this.app.get("/block/:hash", async (req, res) => {
       if (req.params.hash) {
         const hash = req.params.hash;
@@ -102,7 +102,7 @@ export class BlockchainController {
   }
 
   // This endpoint allows you to request the list of Stars registered by an owner
-  getStarsByOwner() {
+  public getStarsByOwner() {
     this.app.get("/blocks/:address", async (req, res) => {
       if (req.params.address) {
         const address = req.params.address;
@@ -122,5 +122,4 @@ export class BlockchainController {
 
     });
   }
-
 }
