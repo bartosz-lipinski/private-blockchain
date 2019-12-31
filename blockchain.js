@@ -1,6 +1,6 @@
 /**
  *                          Blockchain Class
- *  The Blockchain class contain the basics functions to create your own private blockchain
+ *  The Blockchain class contain the basics functions to create your own blockchain
  *  It uses libraries like `crypto-js` to create the hashes for each block and `bitcoinjs-message` 
  *  to verify a message signature. The chain is stored in the array
  *  `this.chain = [];`. Of course each time you run the application the chain will be empty because and array
@@ -8,13 +8,13 @@
  *  
  */
 
-import { Block } from './block';
-import { getCurrentTime } from './utils';
+import { Block } from './block.js';
+import { getCurrentTime } from './utils.js';
 import bitcoinMessage from 'bitcoinjs-message';
 
 export class Blockchain {
-  private height: number = -1;
-  private chain: Block[] = [];
+  height = -1;
+  chain = [];
 
   /**
    * Constructor of the class, you will need to setup your chain array and the height
@@ -33,7 +33,7 @@ export class Blockchain {
    * You should use the `addBlock(block)` to create the Genesis Block
    * Passing as a data `{data: 'Genesis Block'}`
    */
-  public async initializeChain() {
+  async initializeChain() {
     if (this.height === -1) {
       let block = new Block({ data: 'Genesis Block' });
       await this._addBlock(block);
@@ -43,11 +43,11 @@ export class Blockchain {
   /**
    * Utility method that return a Promise that will resolve with the height of the chain
    */
-  public getChainHeight =  async () => {
+  getChainHeight =  async () => {
     return this.height;
   }
 
-  public getLatestBlock(): Block {
+  getLatestBlock() {
     return this.chain[this.chain.length -1];
   }
 
@@ -61,9 +61,9 @@ export class Blockchain {
    * create the `block hash` and push the block into the chain array. Don't for get 
    * to update the `this.height`
    * Note: the symbol `_` in the method name indicates in the javascript convention 
-   * that this method is a private method. 
+   * that this method is a method. 
    */
-  private _addBlock = async (block: Block) => {
+  _addBlock = async (block) => {
     let self = this;
     const NEW_HEIGHT = (await this.getChainHeight()) + 1;
     block.height = NEW_HEIGHT;
@@ -85,7 +85,7 @@ export class Blockchain {
    * The method return a Promise that will resolve with the message to be signed
    * @param {*} address 
    */
-  public requestMessageOwnershipVerification = async (address: string) => {
+  requestMessageOwnershipVerification = async (address) => {
     return `${address}:${getCurrentTime()}:starRegistry`;
   }
 
@@ -106,7 +106,7 @@ export class Blockchain {
    * @param {*} signature 
    * @param {*} star 
    */
-  public submitStar = async (address: string, message: any, signature: any, star: any) => {
+  submitStar = async (address, message, signature, star) => {
     const time = parseInt(message.split(':')[1]);
     let currentTime = getCurrentTime();
 
@@ -130,7 +130,7 @@ export class Blockchain {
    * Search on the chain array for the block that has the hash.
    * @param {*} hash 
    */
-  public getBlockByHash = async (hash: string) => {
+  getBlockByHash = async (hash) => {
     return this.chain.filter(p => p.hash === hash)[0];  
   }
 
@@ -139,7 +139,7 @@ export class Blockchain {
    * with the height equal to the parameter `height`
    * @param {*} height 
    */
-  public getBlockByHeight = async (height: number) => {
+  getBlockByHeight = async (height) => {
     return this.chain.filter(p => p.height === height)[0];
   }
 
@@ -149,7 +149,7 @@ export class Blockchain {
    * Remember the star should be returned decoded.
    * @param {*} address 
    */
-  public getStarsByWalletAddress = async (address: string) => {
+  getStarsByWalletAddress = async (address) => {
     return this.chain
       .map(block => block.getBData())
       .filter(data => data && data.owner === address);
@@ -161,9 +161,9 @@ export class Blockchain {
    * 1. You should validate each block using `validateBlock`
    * 2. Each Block should check the with the previousBlockHash
    */
-  public validateChain = async () => {
-    const errorLog: string[] = [];
-    const promises: Promise<boolean>[] = [];
+  validateChain = async () => {
+    const errorLog = [];
+    const promises = [];
     for (let i = 0; i < this.chain.length; i++) {
       const block = this.chain[i];
       promises.push(block.validate());

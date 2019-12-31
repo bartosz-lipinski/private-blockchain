@@ -12,12 +12,12 @@ import bodyParser from "body-parser";
 /**
  * Require the Blockchain class. This allow us to have only one instance of the class.
  */
-import { Blockchain } from './blockchain';
-import { BlockchainController } from './blockchainController';
+import { Blockchain } from './blockchain.js';
+import { BlockchainController } from './blockchainController.js';
 
 class ApplicationServer {
-  app: express.Express;
-  blockchain: Blockchain;
+  app;
+  blockchain;
 
   constructor() {
     //Express application object

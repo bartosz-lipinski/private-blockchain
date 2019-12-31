@@ -9,29 +9,18 @@
  *  run asynchronous.
  */
 
-import SHA256 from 'crypto-js/sha256';
+import SHA256 from 'crypto-js/sha256.js';
 import hex2ascii from 'hex2ascii';
 
-export interface Star {
-  dec: string;
-  ra: string;
-  story: string;
-}
-
-export interface BlockData {
-  owner: string;
-  star: Star;
-}
-
 export class Block {
-  height: number;
-  body: string;
-  time: number;
-  hash: string;
-  previousBlockHash: string;
+  height;
+  body;
+  time;
+  hash;
+  previousBlockHash;
 
   // Constructor - argument data will be the object containing the transaction data
-  constructor(data: any) {
+  constructor(data) {
     this.hash = null;                                           // Hash of the block
     this.height = 0;                                            // Block Height (consecutive number of each block)
     this.body = Buffer.from(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
@@ -51,14 +40,14 @@ export class Block {
    *  5. Resolve true or false depending if it is valid or not.
    *  Note: to access the class values inside a Promise code you need to create an auxiliary value `let self = this;`
    */
-  public validate = async () => {
+  validate = async () => {
     let self = this;
     const previousHash = self.hash;
     const hash = this.computeHash();
     return previousHash === hash;
   }
 
-  public computeHash = () => {
+  computeHash = () => {
     return SHA256(JSON.stringify(this)).toString();
   }
 
@@ -71,7 +60,7 @@ export class Block {
    *  3. Resolve with the data and make sure that you don't need to return the data for the `genesis block` 
    *     or Reject with an error.
    */
-  public getBData = () => {
+  getBData = () => {
     // Getting the encoded data saved in the Block
     // Decoding the data to retrieve the JSON representation of the object
     // Parse the data to an object to be retrieve.
@@ -80,6 +69,6 @@ export class Block {
     if(this.height <= 0) { return; }
     
     const text = hex2ascii(this.body);
-    return JSON.parse(text) as BlockData;
+    return JSON.parse(text);
   }
 }
