@@ -42,9 +42,14 @@ export class Block {
    */
   validate = async () => {
     let self = this;
-    const previousHash = self.hash;
-    const hash = this.computeHash();
-    return previousHash === hash;
+    const currentHash = self.hash;
+    try {
+      self.hash = null;
+      const newHash = this.computeHash();
+      return currentHash === newHash;
+    } finally {
+      self.hash = currentHash;
+    }
   }
 
   computeHash = () => {
