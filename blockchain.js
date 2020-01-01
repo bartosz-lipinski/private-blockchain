@@ -43,7 +43,7 @@ export class Blockchain {
   /**
    * Utility method that return a Promise that will resolve with the height of the chain
    */
-  getChainHeight =  async () => {
+  getChainHeight = () => {
     return this.height;
   }
 
@@ -65,7 +65,7 @@ export class Blockchain {
    */
   _addBlock = async (block) => {
     let self = this;
-    const NEW_HEIGHT = (await this.getChainHeight()) + 1;
+    const NEW_HEIGHT = this.getChainHeight() + 1;
     block.height = NEW_HEIGHT;
     block.time = getCurrentTime();
     if (NEW_HEIGHT > 0) {
